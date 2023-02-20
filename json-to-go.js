@@ -198,10 +198,12 @@ function jsonToGo(json, typename, flatten = true, example = false, allOmitempty 
 				appender(typename+" ");
 				parent = typename
 				parseScope(scope[keys[i]], depth);
-				appender(' `json:"'+keyname);
+				appender(' `json:"'+keyname.replace(/_optional$/, ",omitempty"));
 				if (allOmitempty || (omitempty && omitempty[keys[i]] === true))
 				{
-					appender(',omitempty');
+					if(!keyname.endsWith("_optional")) {
+						appender(',omitempty');
+					}
 				}
 				appender('"`\n');
 			}
@@ -222,10 +224,12 @@ function jsonToGo(json, typename, flatten = true, example = false, allOmitempty 
 				append(typename+" ");
 				parent = typename
 				parseScope(scope[keys[i]], depth);
-				append(' `json:"'+keyname);
+				append(' `json:"'+keyname.replace(/_optional$/, ",omitempty"));
 				if (allOmitempty || (omitempty && omitempty[keys[i]] === true))
 				{
-					append(',omitempty');
+					if(!keyname.endsWith("_optional")) {
+						append(',omitempty');
+					}
 				}
 				if (example && scope[keys[i]] !== "" && typeof scope[keys[i]] !== "object")
 				{
@@ -283,6 +287,7 @@ function jsonToGo(json, typename, flatten = true, example = false, allOmitempty 
 	// Sanitizes and formats a string to make an appropriate identifier in Go
 	function format(str)
 	{
+		str = str.replace(/_optional$/, "");
 		str = formatNumber(str);
 
 		let sanitized = toProperCase(str).replace(/[^a-z0-9]/ig, "")
