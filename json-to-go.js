@@ -321,8 +321,10 @@ function jsonToGo(json, typename, flatten = true, example = false, allOmitempty 
 		switch (typeof val)
 		{
 			case "string":
-				if (/\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(\+\d\d:\d\d|Z)/.test(val))
+				if (/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(\+\d\d:\d\d|Z)$/.test(val))
 					return "time.Time";
+				else if (/^modal\:(\S+)$/.test(val))
+					return val.substring(6);
 				else
 					return "string";
 			case "number":
